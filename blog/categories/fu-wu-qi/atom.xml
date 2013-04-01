@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 服务器 | Joker's Blog]]></title>
+  <link href="http://lmj921.github.com/blog/categories/fu-wu-qi/atom.xml" rel="self"/>
+  <link href="http://lmj921.github.com/"/>
+  <updated>2013-04-01T16:39:00+08:00</updated>
+  <id>http://lmj921.github.com/</id>
+  <author>
+    <name><![CDATA[Nathan Lu]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[svn结合apache配置]]></title>
+    <link href="http://lmj921.github.com/blog/2013/04/01/svnjie-he-apachepei-zhi/"/>
+    <updated>2013-04-01T16:03:00+08:00</updated>
+    <id>http://lmj921.github.com/blog/2013/04/01/svnjie-he-apachepei-zhi</id>
+    <content type="html"><![CDATA[<p>记录下自己的svn配置</p>
+
+<p>httpd.conf文件，用于整合apache和svn</p>
+
+<p><code>
+&lt;VirtualHost *:80&gt;  KeepAlive On    &lt;Location /svn&gt;         DAV svn         SVNParentPath "d:/repositories"     AuthzSVNAccessFile d:/repositories/authz        AuthType Basic          AuthName "Subversion repos"         AuthUserFile d:/repositories/passwd         Require valid-user  &lt;/Location&gt; &lt;/VirtualHost&gt;
+</code>
+passwd文件，存放了每个用户的登录信息</p>
+
+<ol>
+<li>切换到apache/bin目录下</li>
+<li>执行<strong>htpasswd passwd username</strong></li>
+</ol>
+
+
+<p>authz文件，用于控制权限</p>
+
+<p><code>
+[groups]admin = design = dev = cdev = art = [/]@admin = rw[Design:/]* = r@admin = rw@design = rw[Art:/]* = r@admin = rw@design = r@art = rw[Server:/]@admin = rw@dev = rw[Client:/]@admin = rw@dev = rw@cdev = rw
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -9,8 +9,15 @@
   <meta name="author" content="Nathan Lu">
 
   
-  <meta name="description" content="初期艰苦点，虽然借的民房，但是地段和环境都不错，周边也很方便。下周一，4月1日，正式开始，一定要做出成绩，活下去。
-">
+  <meta name="description" content="记录下自己的svn配置 httpd.conf文件，用于整合apache和svn 1
+2
+3
+4
+5
+6
+7
+8
+&lt;VirtualHost *:80&gt; KeepAlive On &lt;Location /svn&gt; DAV svn SVNParentPath "d:/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +73,68 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/01/svnjie-he-apachepei-zhi/">Svn结合apache配置</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-01T16:03:00+08:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time>
+        
+         | <a href="/blog/2013/04/01/svnjie-he-apachepei-zhi/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>记录下自己的svn配置</p>
+
+<p>httpd.conf文件，用于整合apache和svn</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;VirtualHost *:80&gt; KeepAlive On    &lt;Location /svn&gt;       DAV svn         SVNParentPath "d:/repositories"     AuthzSVNAccessFile d:/repositories/authz        AuthType Basic          AuthName "Subversion repos"         AuthUserFile d:/repositories/passwd         Require valid-user  &lt;/Location&gt; &lt;/VirtualHost&gt;
+</span><span class='line'>```
+</span><span class='line'>passwd文件，存放了每个用户的登录信息
+</span><span class='line'>
+</span><span class='line'>1. 切换到apache/bin目录下
+</span><span class='line'>2. 执行**htpasswd passwd username**
+</span><span class='line'>
+</span><span class='line'>authz文件，用于控制权限
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>[groups]admin = design = dev = cdev = art = [/]@admin = rw[Design:/]<em> = r@admin = rw@design = rw[Art:/]</em> = r@admin = rw@design = r@art = rw[Server:/]@admin = rw@dev = rw[Client:/]@admin = rw@dev = rw@cdev = rw
+&#8220;`</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -192,6 +261,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/01/svnjie-he-apachepei-zhi/">svn结合apache配置</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/03/30/ban-gong-shi-que-ding-liao-%2Cxia-zhou-%5B%3F%5D-zheng-shi-kai-shi/">办公室确定了，下周一正式开始</a>

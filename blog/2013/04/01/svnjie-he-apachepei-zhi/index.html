@@ -5,11 +5,19 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: 创业故事 - Joker's Blog</title>
+  <title>svn结合apache配置 - Joker's Blog</title>
   <meta name="author" content="Nathan Lu">
 
   
-  <meta name="description" content="Category: 创业故事">
+  <meta name="description" content="记录下自己的svn配置 httpd.conf文件，用于整合apache和svn 1
+2
+3
+4
+5
+6
+7
+8
+&lt;VirtualHost *:80&gt; KeepAlive On &lt;Location /svn&gt; DAV svn SVNParentPath "d:/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +26,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://lmj921.github.comblog/categories/chuang-ye-gu-shi">
+  <link rel="canonical" href="http://lmj921.github.com/blog/2013/04/01/svnjie-he-apachepei-zhi">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Joker's Blog" type="application/atom+xml">
@@ -64,50 +72,117 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: 创业故事</h1>
+    
+      <h1 class="entry-title">Svn结合apache配置</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-01T16:03:00+08:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>记录下自己的svn配置</p>
 
-  
-  <h2>2013</h2>
+<p>httpd.conf文件，用于整合apache和svn</p>
 
-<article>
-  
-<h1><a href="/blog/2013/03/30/ban-gong-shi-que-ding-liao-%2Cxia-zhou-%5B%3F%5D-zheng-shi-kai-shi/">办公室确定了，下周一正式开始</a></h1>
-<time datetime="2013-03-30T21:18:00+08:00" pubdate><span class='month'>Mar</span> <span class='day'>30</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/chuang-ye-gu-shi/'>创业故事</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2013/03/27/zheng-shi-kai-shi-xie-kai-fa-xin-de/">正式开始写开发心得</a></h1>
-<time datetime="2013-03-27T22:30:00+08:00" pubdate><span class='month'>Mar</span> <span class='day'>27</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/dev/'>Dev</a>, <a class='category' href='/blog/categories/chuang-ye-gu-shi/'>创业故事</a></span>
-</footer>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;VirtualHost *:80&gt; KeepAlive On    &lt;Location /svn&gt;       DAV svn         SVNParentPath "d:/repositories"     AuthzSVNAccessFile d:/repositories/authz        AuthType Basic          AuthName "Subversion repos"         AuthUserFile d:/repositories/passwd         Require valid-user  &lt;/Location&gt; &lt;/VirtualHost&gt;
+</span><span class='line'>```
+</span><span class='line'>passwd文件，存放了每个用户的登录信息
+</span><span class='line'>
+</span><span class='line'>1. 切换到apache/bin目录下
+</span><span class='line'>2. 执行**htpasswd passwd username**
+</span><span class='line'>
+</span><span class='line'>authz文件，用于控制权限
+</span></code></pre></td></tr></table></div></figure>
 
 
-</article>
-
+<p>[groups]admin = design = dev = cdev = art = [/]@admin = rw[Design:/]<em> = r@admin = rw@design = rw[Art:/]</em> = r@admin = rw@design = r@art = rw[Server:/]@admin = rw@dev = rw[Client:/]@admin = rw@dev = rw@cdev = rw
+&#8220;`</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Nathan Lu</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-01T16:03:00+08:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/fu-wu-qi/'>服务器</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://lmj921.github.com/blog/2013/04/01/svnjie-he-apachepei-zhi/" data-via="" data-counturl="http://lmj921.github.com/blog/2013/04/01/svnjie-he-apachepei-zhi/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/03/30/ban-gong-shi-que-ding-liao-%2Cxia-zhou-%5B%3F%5D-zheng-shi-kai-shi/" title="Previous Post: 办公室确定了，下周一正式开始">&laquo; 办公室确定了，下周一正式开始</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -158,7 +233,10 @@
       var disqus_shortname = 'jokersblog921';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://lmj921.github.com/blog/2013/04/01/svnjie-he-apachepei-zhi/';
+        var disqus_url = 'http://lmj921.github.com/blog/2013/04/01/svnjie-he-apachepei-zhi/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 服务器 | Joker's Blog]]></title>
   <link href="http://lmj921.github.com/blog/categories/fu-wu-qi/atom.xml" rel="self"/>
   <link href="http://lmj921.github.com/"/>
-  <updated>2013-04-01T16:39:00+08:00</updated>
+  <updated>2013-04-01T16:46:53+08:00</updated>
   <id>http://lmj921.github.com/</id>
   <author>
     <name><![CDATA[Nathan Lu]]></name>
@@ -18,7 +18,7 @@
     <link href="http://lmj921.github.com/blog/2013/04/01/svnjie-he-apachepei-zhi/"/>
     <updated>2013-04-01T16:03:00+08:00</updated>
     <id>http://lmj921.github.com/blog/2013/04/01/svnjie-he-apachepei-zhi</id>
-    <content type="html"><![CDATA[<p>记录下自己的svn配置</p>
+    <content type="html"><![CDATA[<p>记录下自己的svn配置，我直接使用的是windows版本的WANDisco SVN，如果是linux的话配置文件是类似的</p>
 
 <p>httpd.conf文件，用于整合apache和svn</p>
 

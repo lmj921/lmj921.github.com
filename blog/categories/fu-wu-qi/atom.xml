@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 服务器 | Joker's Blog]]></title>
   <link href="http://lmj921.github.com/blog/categories/fu-wu-qi/atom.xml" rel="self"/>
   <link href="http://lmj921.github.com/"/>
-  <updated>2013-04-01T16:55:35+08:00</updated>
+  <updated>2013-04-01T17:11:58+08:00</updated>
   <id>http://lmj921.github.com/</id>
   <author>
     <name><![CDATA[Nathan Lu]]></name>
@@ -22,9 +22,23 @@
 
 <p>httpd.conf文件，用于整合apache和svn</p>
 
-<p><code>
-&lt;VirtualHost *:80&gt;  KeepAlive On    &lt;Location /svn&gt;         DAV svn         SVNParentPath "d:/repositories"     AuthzSVNAccessFile d:/repositories/authz        AuthType Basic          AuthName "Subversion repos"         AuthUserFile d:/repositories/passwd         Require valid-user  &lt;/Location&gt; &lt;/VirtualHost&gt;
-</code>
+<p>```
+<VirtualHost *:80></p>
+
+<pre><code>KeepAlive On
+&lt;Location /svn&gt;
+    DAV svn
+    SVNParentPath "d:/repositories"
+    AuthzSVNAccessFile d:/repositories/authz
+    AuthType Basic
+    AuthName "Subversion repos"
+    AuthUserFile d:/repositories/passwd
+    Require valid-user
+&lt;/Location&gt; 
+</code></pre>
+
+<p></VirtualHost>
+```
 passwd文件，存放了每个用户的登录信息</p>
 
 <ol>
@@ -35,9 +49,33 @@ passwd文件，存放了每个用户的登录信息</p>
 
 <p>authz文件，用于控制权限</p>
 
-<p><code>
-[groups]admin = design = dev = cdev = art = [/]@admin = rw[Design:/]* = r@admin = rw@design = rw[Art:/]* = r@admin = rw@design = r@art = rw[Server:/]@admin = rw@dev = rw[Client:/]@admin = rw@dev = rw@cdev = rw
-</code></p>
+<p>```
+[groups]
+admin =
+design =
+dev =
+cdev =
+art =</p>
+
+<p>[/]
+@admin = rw
+[Design:/]
+* = r
+@admin = rw
+@design = rw
+[Art:/]
+* = r
+@admin = rw
+@design = r
+@art = rw
+[Server:/]
+@admin = rw
+@dev = rw
+[Client:/]
+@admin = rw
+@dev = rw
+@cdev = rw
+```</p>
 ]]></content>
   </entry>
   

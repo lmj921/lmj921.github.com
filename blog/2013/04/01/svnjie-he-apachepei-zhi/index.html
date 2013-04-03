@@ -199,7 +199,15 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>删除目录下的svn信息，用于迁移项目</p>
 
+<p><strong>find . -name &#8220;.svn&#8221; | xargs rm -Rf</strong></p>
+
+<p>svn忽略xcode的工程配置文件，修改~/.subversion/config文件，放开global-ignores的注释，加入<strong><em>.xcuserdatad xcuserdata </em>.xcworkspace</strong></p>
+
+<p>修改后如下</p>
+
+<p>global-ignores = <em>.o </em>.lo <em>.la </em>.al .libs <em>.pyc </em>.pyo <em>.rej .</em>.swp .DS_Store <strong><em>.xcuserdatad xcuserdata </em>.xcworkspace</strong></p>
 </div>
 
 

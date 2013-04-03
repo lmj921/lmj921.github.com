@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 服务器 | Joker's Blog]]></title>
   <link href="http://lmj921.github.com/blog/categories/fu-wu-qi/atom.xml" rel="self"/>
   <link href="http://lmj921.github.com/"/>
-  <updated>2013-04-01T17:26:12+08:00</updated>
+  <updated>2013-04-03T13:21:18+08:00</updated>
   <id>http://lmj921.github.com/</id>
   <author>
     <name><![CDATA[Nathan Lu]]></name>
@@ -76,6 +76,16 @@ art =</p>
 @dev = rw
 @cdev = rw
 ```</p>
+
+<p>删除目录下的svn信息，用于迁移项目</p>
+
+<p><strong>find . -name ".svn" | xargs rm -Rf</strong></p>
+
+<p>svn忽略xcode的工程配置文件，修改~/.subversion/config文件，放开global-ignores的注释，加入<strong><em>.xcuserdatad xcuserdata </em>.xcworkspace</strong></p>
+
+<p>修改后如下</p>
+
+<p>global-ignores = <em>.o </em>.lo <em>.la </em>.al .libs <em>.pyc </em>.pyo <em>.rej .</em>.swp .DS_Store <strong><em>.xcuserdatad xcuserdata </em>.xcworkspace</strong></p>
 ]]></content>
   </entry>
   

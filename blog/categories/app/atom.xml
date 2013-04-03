@@ -4,7 +4,7 @@
   <title><![CDATA[Category: app | Joker's Blog]]></title>
   <link href="http://lmj921.github.com/blog/categories/app/atom.xml" rel="self"/>
   <link href="http://lmj921.github.com/"/>
-  <updated>2013-04-03T14:58:41+08:00</updated>
+  <updated>2013-04-03T15:37:23+08:00</updated>
   <id>http://lmj921.github.com/</id>
   <author>
     <name><![CDATA[Nathan Lu]]></name>
@@ -18,7 +18,13 @@
     <link href="http://lmj921.github.com/blog/2013/04/03/xcodeli-jia-ru-cocos2d-xmo-ban/"/>
     <updated>2013-04-03T14:00:00+08:00</updated>
     <id>http://lmj921.github.com/blog/2013/04/03/xcodeli-jia-ru-cocos2d-xmo-ban</id>
-    <content type="html"><![CDATA[<p><img src="/images/screenshot/xcode.png" title="Title" alt="alt text" /></p>
+    <content type="html"><![CDATA[<p>用cocos2d-x的开发者们，在new file的时候，是不是没有2dx的选项。这是因为2dx的安装模板只在xcode里新增的new project的模板，没有new file的模板。</p>
+
+<p>但是cocos2d的安装模板里有new file的模板，我根据这个新做了个xcode的模板，<a href="https://dl.dropbox.com/u/72219498/cocos2d-x%20xcode%20template.zip"><strong>点我下载</strong></a> 。</p>
+
+<p>下载解压后把文件放到<strong>~/Library/Developer/Xcode/Templates/File Templates</strong>，重启xcode即可，效果下图。</p>
+
+<p><img src="/images/screenshot/xcode.png" title="Title" alt="alt text" /></p>
 ]]></content>
   </entry>
   

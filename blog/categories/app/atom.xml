@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: app | Joker's Blog]]></title>
+  <link href="http://lmj921.github.com/blog/categories/app/atom.xml" rel="self"/>
+  <link href="http://lmj921.github.com/"/>
+  <updated>2013-04-03T14:58:41+08:00</updated>
+  <id>http://lmj921.github.com/</id>
+  <author>
+    <name><![CDATA[Nathan Lu]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[xcode里加入cocos2d-x模板]]></title>
+    <link href="http://lmj921.github.com/blog/2013/04/03/xcodeli-jia-ru-cocos2d-xmo-ban/"/>
+    <updated>2013-04-03T14:00:00+08:00</updated>
+    <id>http://lmj921.github.com/blog/2013/04/03/xcodeli-jia-ru-cocos2d-xmo-ban</id>
+    <content type="html"><![CDATA[<p><img src="/images/screenshot/xcode.png" title="Title" alt="alt text" /></p>
+]]></content>
+  </entry>
+  
+</feed>

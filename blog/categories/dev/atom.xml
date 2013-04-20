@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Dev | Joker's Blog]]></title>
   <link href="http://lmj921.github.com/blog/categories/dev/atom.xml" rel="self"/>
   <link href="http://lmj921.github.com/"/>
-  <updated>2013-04-03T17:51:23+08:00</updated>
+  <updated>2013-04-20T13:19:42+08:00</updated>
   <id>http://lmj921.github.com/</id>
   <author>
     <name><![CDATA[Nathan Lu]]></name>
@@ -12,6 +12,98 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[用CCTargetAction实现战斗]]></title>
+    <link href="http://lmj921.github.com/blog/2013/04/20/yong-cctargetactionshi-xian-zhan-dou/"/>
+    <updated>2013-04-20T12:20:00+08:00</updated>
+    <id>http://lmj921.github.com/blog/2013/04/20/yong-cctargetactionshi-xian-zhan-dou</id>
+    <content type="html"><![CDATA[<p>最近在开发游戏的战斗功能，战斗逻辑大致是</p>
+
+<ol>
+<li>玩家操作</li>
+<li>玩家点击结束按钮，客户端向服务器发送数据</li>
+<li>服务器反馈本回合</li>
+<li>客户端根据服务器返回的数据来播放npc动作</li>
+</ol>
+
+
+<p>对客户端来说，主要逻辑是在1和4上。对于4，播放npc动作的时候，需要依次播放npc的动作，也就是说<strong>需要对不同的sprite依次执行action</strong>。
+一开始我是使用来传统的状态机，也就是在战斗scene的update里，设置各种状态，每个npc sprite的动作播放完毕，去更新对应状态。大致代码如下</p>
+
+<p>``` c++ main loop
+void BattleController::update(float dt)
+{</p>
+
+<pre><code>if (!_isBattleStart) {//战斗未开始
+    return;
+}
+
+if (_isPlaying) {//战斗过程播放中
+    return;
+}
+
+if (_isOppPlayingCard) {//对手出牌中
+    return;
+}
+
+// 战斗开始
+if (_actionIndex&lt;_curBattleTurn-&gt;getBattleActionList()-&gt;count()) {//战斗动作数组
+    …
+    delay=attacker-&gt;process(_curBattle, true);
+    delay+=DELAY_BETWEEN_ATTACKER_DEFENDER;
+    _isPlaying=true;
+    this-&gt;readyNextStep(delay);//延迟多久后，去更新状态
+    …
+
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>这种方式虽然能够实现，但是需要设置很多状态，而且逻辑上比较复杂，而且扩展性上总感觉不足，比如策划们新增了个超级武器，再每回合动作之前，会给对方造成aoe伤害，那就又要加对应的状态。</p>
+
+<p>经过同事间的交流和google，最好的解决方案应该是实现个<strong>动作链</strong>的概念，也就是<strong>不同的sprite依次执行action</strong>。在cocos2d的论坛上找到了一篇3年前的帖子，一个老外贴了自己的一个CCTargetAction的类，结合这个类就能实现这个概念。现在的cocos2d和cocos2d-x已经提供了这个action，名字就叫CCTargetAction。</p>
+
+<p><code>c++ cocos2d-x CCTargetAction
+CCTargetedAction* CCTargetedAction::create(CCNode* pTarget, CCFiniteTimeAction* pAction)
+</code></p>
+
+<p><code>objective-c cocos2d CCTargetAction
++ (id) actionWithTarget:(id) target action:(CCFiniteTimeAction*) action
+</code></p>
+
+<p>这个类的构造需要传入动作执行的target和action，并且retain的了2个对象，这样就形成了动作链里的“<strong>动作</strong>”。</p>
+
+<p>``` c++ 战斗逻辑
+void BattleController::doGotBattleCards(cocos2d::CCObject *data){</p>
+
+<pre><code>CCArray *actionList=new CCArray;//动作链数组
+
+…
+
+//战斗动作
+for (int i=0,n=_curBattleTurn-&gt;getBattleActionList()-&gt;count(); i&lt;n; i++) {
+    BattleAction *action=dynamic_cast&lt;BattleAction *&gt;(_curBattleTurn-&gt;getBattleActionList()-&gt;objectAtIndex(i));
+    CCArray *tempArr=this-&gt;processBattleAction(action);//动作序列
+    actionList-&gt;addObjectsFromArray(tempArr);
+}
+
+…
+
+if (actionList-&gt;count()&gt;0) {
+    CCSequence *seq=CCSequence::create(actionList);//把动作链转换成action
+    this-&gt;runAction(seq);//执行动作
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>采用<strong>动作链</strong>后，整个战斗的逻辑非常清晰，而且非常易于扩展。如果用这种方式处理目前流行的“战报”型的战斗也是非常适合。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[正式开始写开发心得]]></title>

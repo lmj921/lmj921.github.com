@@ -9,7 +9,10 @@
   <meta name="author" content="Nathan Lu">
 
   
-  <meta name="description" content="用cocos2d-x的开发者们，在new file的时候，是不是没有2dx的选项。这是因为2dx的安装模板只在xcode里新增的new project的模板，没有new file的模板。 但是cocos2d的安装模板里有new file的模板，我根据这个新做了个xcode的模板，dropbox下载 &hellip;">
+  <meta name="description" content="最近在开发游戏的战斗功能，战斗逻辑大致是 玩家操作
+玩家点击结束按钮，客户端向服务器发送数据
+服务器反馈本回合
+客户端根据服务器返回的数据来播放npc动作 对客户端来说，主要逻辑是在1和4上。对于4，播放npc动作的时候，需要依次播放npc的动作， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +80,173 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/20/yong-cctargetactionshi-xian-zhan-dou/">用CCTargetAction实现战斗</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-20T12:20:00+08:00" pubdate data-updated="true">Apr 20<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/04/20/yong-cctargetactionshi-xian-zhan-dou/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近在开发游戏的战斗功能，战斗逻辑大致是</p>
+
+<ol>
+<li>玩家操作</li>
+<li>玩家点击结束按钮，客户端向服务器发送数据</li>
+<li>服务器反馈本回合</li>
+<li>客户端根据服务器返回的数据来播放npc动作</li>
+</ol>
+
+
+<p>对客户端来说，主要逻辑是在1和4上。对于4，播放npc动作的时候，需要依次播放npc的动作，也就是说<strong>需要对不同的sprite依次执行action</strong>。
+一开始我是使用来传统的状态机，也就是在战斗scene的update里，设置各种状态，每个npc sprite的动作播放完毕，去更新对应状态。大致代码如下</p>
+
+<figure class='code'><figcaption><span>main loop</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">BattleController</span><span class="o">::</span><span class="n">update</span><span class="p">(</span><span class="kt">float</span> <span class="n">dt</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_isBattleStart</span><span class="p">)</span> <span class="p">{</span><span class="c1">//战斗未开始</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_isPlaying</span><span class="p">)</span> <span class="p">{</span><span class="c1">//战斗过程播放中</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_isOppPlayingCard</span><span class="p">)</span> <span class="p">{</span><span class="c1">//对手出牌中</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 战斗开始</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">_actionIndex</span><span class="o">&lt;</span><span class="n">_curBattleTurn</span><span class="o">-&gt;</span><span class="n">getBattleActionList</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">())</span> <span class="p">{</span><span class="c1">//战斗动作数组</span>
+</span><span class='line'>      <span class="err">…</span>
+</span><span class='line'>      <span class="n">delay</span><span class="o">=</span><span class="n">attacker</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">(</span><span class="n">_curBattle</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>      <span class="n">delay</span><span class="o">+=</span><span class="n">DELAY_BETWEEN_ATTACKER_DEFENDER</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">_isPlaying</span><span class="o">=</span><span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">this</span><span class="o">-&gt;</span><span class="n">readyNextStep</span><span class="p">(</span><span class="n">delay</span><span class="p">);</span><span class="c1">//延迟多久后，去更新状态</span>
+</span><span class='line'>      <span class="err">…</span>
+</span><span class='line'>      
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种方式虽然能够实现，但是需要设置很多状态，而且逻辑上比较复杂，而且扩展性上总感觉不足，比如策划们新增了个超级武器，再每回合动作之前，会给对方造成aoe伤害，那就又要加对应的状态。</p>
+
+<p>经过同事间的交流和google，最好的解决方案应该是实现个<strong>动作链</strong>的概念，也就是<strong>不同的sprite依次执行action</strong>。在cocos2d的论坛上找到了一篇3年前的帖子，一个老外贴了自己的一个CCTargetAction的类，结合这个类就能实现这个概念。现在的cocos2d和cocos2d-x已经提供了这个action，名字就叫CCTargetAction。</p>
+
+<figure class='code'><figcaption><span>cocos2d-x CCTargetAction</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">CCTargetedAction</span><span class="o">*</span> <span class="n">CCTargetedAction</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">CCNode</span><span class="o">*</span> <span class="n">pTarget</span><span class="p">,</span> <span class="n">CCFiniteTimeAction</span><span class="o">*</span> <span class="n">pAction</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>cocos2d CCTargetAction</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="nf">actionWithTarget:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="n">target</span> <span class="nl">action:</span><span class="p">(</span><span class="n">CCFiniteTimeAction</span><span class="o">*</span><span class="p">)</span> <span class="n">action</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个类的构造需要传入动作执行的target和action，并且retain的了2个对象，这样就形成了动作链里的“<strong>动作</strong>”。</p>
+
+<figure class='code'><figcaption><span>战斗逻辑</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">BattleController</span><span class="o">::</span><span class="n">doGotBattleCards</span><span class="p">(</span><span class="n">cocos2d</span><span class="o">::</span><span class="n">CCObject</span> <span class="o">*</span><span class="n">data</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">CCArray</span> <span class="o">*</span><span class="n">actionList</span><span class="o">=</span><span class="k">new</span> <span class="n">CCArray</span><span class="p">;</span><span class="c1">//动作链数组</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="err">…</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//战斗动作</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="n">_curBattleTurn</span><span class="o">-&gt;</span><span class="n">getBattleActionList</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">();</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">BattleAction</span> <span class="o">*</span><span class="n">action</span><span class="o">=</span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">BattleAction</span> <span class="o">*&gt;</span><span class="p">(</span><span class="n">_curBattleTurn</span><span class="o">-&gt;</span><span class="n">getBattleActionList</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">objectAtIndex</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
+</span><span class='line'>      <span class="n">CCArray</span> <span class="o">*</span><span class="n">tempArr</span><span class="o">=</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">processBattleAction</span><span class="p">(</span><span class="n">action</span><span class="p">);</span><span class="c1">//动作序列</span>
+</span><span class='line'>      <span class="n">actionList</span><span class="o">-&gt;</span><span class="n">addObjectsFromArray</span><span class="p">(</span><span class="n">tempArr</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="err">…</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">actionList</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">()</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">CCSequence</span> <span class="o">*</span><span class="n">seq</span><span class="o">=</span><span class="n">CCSequence</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">actionList</span><span class="p">);</span><span class="c1">//把动作链转换成action</span>
+</span><span class='line'>      <span class="k">this</span><span class="o">-&gt;</span><span class="n">runAction</span><span class="p">(</span><span class="n">seq</span><span class="p">);</span><span class="c1">//执行动作</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>采用<strong>动作链</strong>后，整个战斗的逻辑非常清晰，而且非常易于扩展。如果用这种方式处理目前流行的“战报”型的战斗也是非常适合。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -248,7 +418,10 @@
 
 <p>删除目录下的svn信息，用于迁移项目</p>
 
-<p><strong>find . -name &#8220;.svn&#8221; | xargs rm -Rf</strong></p>
+<figure class='code'><figcaption><span>cmd</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">find</span> <span class="o">.</span> <span class="o">-</span><span class="n">name</span> <span class="s">&quot;.svn&quot;</span> <span class="o">|</span> <span class="n">xargs</span> <span class="n">rm</span> <span class="o">-</span><span class="n">Rf</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>svn忽略xcode的工程配置文件，修改~/.subversion/config文件，放开global-ignores的注释，加入<strong><em>.xcuserdatad xcuserdata </em>.xcworkspace</strong></p>
 
@@ -389,6 +562,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/04/20/yong-cctargetactionshi-xian-zhan-dou/">用CCTargetAction实现战斗</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/04/03/xcodeli-jia-ru-cocos2d-xmo-ban/">xcode里加入cocos2d-x模板</a>
       </li>
     
@@ -404,15 +581,11 @@
         <a href="/blog/2013/03/27/zheng-shi-kai-shi-xie-kai-fa-xin-de/">正式开始写开发心得</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2013/03/26/ce-shi-blog/">测试blog</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/app'>app (1)</a></li><li><a href='/blog/categories/dev'>Dev (1)</a></li><li><a href='/blog/categories/ios'>iOS (1)</a></li><li><a href='/blog/categories/创业故事'>创业故事 (2)</a></li><li><a href='/blog/categories/服务器'>服务器 (1)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/app'>app (1)</a></li><li><a href='/blog/categories/dev'>Dev (2)</a></li><li><a href='/blog/categories/ios'>iOS (2)</a></li><li><a href='/blog/categories/创业故事'>创业故事 (2)</a></li><li><a href='/blog/categories/服务器'>服务器 (1)</a></li></ul>
 </section>
 
 

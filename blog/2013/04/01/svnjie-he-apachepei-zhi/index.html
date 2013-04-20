@@ -213,8 +213,8 @@
 
 <p>删除目录下的svn信息，用于迁移项目</p>
 
-<figure class='code'><figcaption><span>cmd</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">find</span> <span class="o">.</span> <span class="o">-</span><span class="n">name</span> <span class="s">&quot;.svn&quot;</span> <span class="o">|</span> <span class="n">xargs</span> <span class="n">rm</span> <span class="o">-</span><span class="n">Rf</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>find . -name <span class="s2">&quot;.svn&quot;</span> | xargs rm -Rf
 </span></code></pre></td></tr></table></div></figure>
 
 
